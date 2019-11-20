@@ -1,16 +1,16 @@
 LIBRARY IEEE;
 USE ieee.std_logic_1164.ALL;
 USE ieee.numeric_std.ALL;
-USE work.array_integer.ALL;
-
+USE ieee.std_logic_signed.ALL;
+USE work.array_float.ALL;
 
 ENTITY perceptron IS
 GENERIC(
-	data_width: INTEGER := 10);
+	data_width  : INTEGER);
 PORT(
-	input : IN integer_array;
-	weight : IN integer_array;
-	output : OUT INTEGER
+	input       : IN float_array_neuron;
+	weight 		: IN float_array_neuron;
+	output 		: OUT STD_LOGIC_VECTOR(33 DOWNTO 0)
 );
 END perceptron;
 
@@ -18,7 +18,7 @@ ARCHITECTURE behavior OF perceptron IS
 BEGIN
 
 PROCESS(input, weight)
-variable temp: INTEGER;
+variable temp: STD_LOGIC_VECTOR(33 DOWNTO 0);
 BEGIN
 	
 	--Produto Escalar
@@ -28,7 +28,7 @@ BEGIN
 	
 	--ReLu
 	IF temp = 0 THEN
-		output <= 0;
+		output <= (others => '0');
 	ELSE
 		output <= temp;
 	END IF;
