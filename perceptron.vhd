@@ -1,15 +1,12 @@
 LIBRARY IEEE;
 USE ieee.std_logic_1164.ALL;
 USE ieee.numeric_std.ALL;
-USE ieee.std_logic_signed.ALL;
-USE work.array_float.ALL;
+USE work.parameters.ALL;
 
 ENTITY perceptron IS
-GENERIC(
-	data_width  : INTEGER);
 PORT(
-	input       : IN float_array_neuron;
-	weight 		: IN float_array_neuron;
+	input       : IN array_neuron;
+	weight 		: IN array_neuron;
 	output 		: OUT STD_LOGIC_VECTOR(33 DOWNTO 0)
 );
 END perceptron;
@@ -22,12 +19,12 @@ variable temp: STD_LOGIC_VECTOR(33 DOWNTO 0);
 BEGIN
 	
 	--Produto Escalar
-	FOR i IN 0 TO (data_width - 1) LOOP
-		temp := temp + (input(i) * weight(i));
+	FOR i IN 0 TO data_width LOOP
+		temp := STD_LOGIC_VECTOR(SIGNED(temp) + (SIGNED(input(i)) * SIGNED(weight(i))));
 	END LOOP;
 	
 	--ReLu
-	IF temp = 0 THEN
+	IF (temp(33) = '1') OR (temp = (temp'range => '0')) THEN
 		output <= (others => '0');
 	ELSE
 		output <= temp;
