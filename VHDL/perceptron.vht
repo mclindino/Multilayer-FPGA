@@ -1,21 +1,33 @@
-1.2313
-0.6542
-1.23145
--0.54123
-20.31451
-0.132
-1.231
--0.4
--0.451200
--1.0
-0.231
-0.51
--1.64
-1.8522
--1.452
-1.123
+LIBRARY ieee;                                               
+USE ieee.std_logic_1164.all;                                
+use work.parameters.all;
 
-
+ENTITY perceptron_vhd_tst IS
+END perceptron_vhd_tst;
+ARCHITECTURE perceptron_arch OF perceptron_vhd_tst IS
+-- constants                                                 
+-- signals                                                   
+SIGNAL clock : STD_LOGIC;
+SIGNAL input : array_neuron;
+SIGNAL output : STD_LOGIC_VECTOR(33 DOWNTO 0);
+SIGNAL weight : array_neuron;
+COMPONENT perceptron
+	PORT (
+	clock : IN STD_LOGIC;
+	input : IN array_neuron;
+	output : OUT STD_LOGIC_VECTOR(33 DOWNTO 0);
+	weight : IN array_neuron
+	);
+END COMPONENT;
+BEGIN
+	i1 : perceptron
+	PORT MAP (
+-- list connections between master ports and signals
+	clock => clock,
+	input => input,
+	output => output,
+	weight => weight
+	);
 PROCESS
 BEGIN
 	clock <= '1', '0' AFTER 5ns;
@@ -77,3 +89,17 @@ weight(15) <= "00000000100011111";
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+	
+END perceptron_arch;
