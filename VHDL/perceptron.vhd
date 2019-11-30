@@ -5,16 +5,16 @@ USE work.parameters.ALL;
 
 ENTITY perceptron IS
 PORT(
-	input       : IN  array_neuron;
-	weight 		: IN  array_neuron;
+	input       : IN  input_image;
+	weight 		: IN  input_image;
 	clock			: IN  STD_LOGIC;
 	reset		   : IN  STD_LOGIC;
-	output 		: OUT STD_LOGIC_VECTOR((((8 + precision) * 2) + 1) DOWNTO 0)
+	output 		: OUT STD_LOGIC_VECTOR((((2 + precision) * 2) + 1) DOWNTO 0)
 );
 END perceptron;
 
 ARCHITECTURE behavior OF perceptron IS
-SIGNAL sum: STD_LOGIC_VECTOR((((8 + precision) * 2) + 1) DOWNTO 0);
+SIGNAL sum: STD_LOGIC_VECTOR((((2 + precision) * 2) + 1) DOWNTO 0);
 SIGNAL valid_bit: STD_LOGIC;
 
 	--signal aux1, aux2, aux3, aux4, aux5, aux6, aux7, aux8, aux9, aux10, aux11, aux12, aux13, aux14, aux15, aux16  : SIGNED((((8 + precision) * 2) + 1) DOWNTO 0);
@@ -22,8 +22,8 @@ SIGNAL valid_bit: STD_LOGIC;
 --SIGNAL bit_controle: STD_LOGIC;
 BEGIN
 	PROCESS(input, weight,clock)
-		VARIABLE aux : STD_LOGIC_VECTOR((((8 + precision) * 2) + 1) DOWNTO 0);
-		VARIABLE aux_sum : STD_LOGIC_VECTOR((((8 + precision) * 2) + 1) DOWNTO 0);
+		VARIABLE aux : STD_LOGIC_VECTOR((((2 + precision) * 2) + 1) DOWNTO 0);
+		VARIABLE aux_sum : STD_LOGIC_VECTOR((((2 + precision) * 2) + 1) DOWNTO 0);
 		--VARIABLE validaInput, validaWeight : STD_LOGIC_VECTOR((((8 + precision) * 2) + 1) DOWNTO 0);
 		--variable cont : integer range 0 to 32 := 0;
 		BEGIN	
@@ -44,6 +44,8 @@ BEGIN
 				sum <= aux_sum;
 				valid_bit <= '1';
 			END IF;
+			
+			
 			--if (cont < 16) then
 			--	aux := STD_LOGIC_VECTOR(SIGNED(input(cont)) * SIGNED(weight(cont)));
 			--	sum <= STD_LOGIC_VECTOR(SIGNED(sum) + SIGNED(aux));
@@ -73,7 +75,15 @@ BEGIN
 		END IF;
 		
 	END PROCESS;
-		output <= sum;
+	
+	PROCESS(sum)
+	BEGIN
+		IF (sum(68) = '1') OR (sum = (sum'range => '0')) THEN
+			output <= (others => '0');
+		ELSE
+			output <= sum;
+		END IF;
+	END PROCESS;
 		--output <= "0000000000000000" & sum(33 downto 16);
 		--aux_sum2 <= aux1 + aux2 + aux3 + aux4 + aux5 + aux6 + aux7 + aux8 + aux9 + aux10 + aux11 + aux12 + aux13 + aux14 + aux15 + aux16;
 		

@@ -10,12 +10,17 @@ Original file is located at
 import math
 #import sys
 
-image_input = [145, 100, -4, 32, 15, 61, 87, 109, 201, 245, 98, 23, 4, 56, -1, 23]
-weight = [1.2313, 0.6542, 1.23145, -0.54123, 20.31451, 0.132, 1.231, -0.4, -0.451200, -1.0, 0.231, 0.51, -1.64, 1.8522, -1.452, 1.123]
+image_input = [1.32, 0.12, -1.44, 0.32, 0.15, 0.61, 0.87, 1.109, 0.201]#, 245] #, 98, 23, 4, 56, -1, 23, 35, 45, 21, 6, -87, 9, 45, 125, 19]
+print('Input size: ' + str(len(image_input)))
+weight = [1.2313, 0.6542, 1.23145, -0.54123, 0.31451, 0.132, 1.231, -0.4, -0.451200, -1.0, 0.231, 0.51, -1.64, 1.8522, -1.452, 1.123, -0.254, 0.5878, 1.253, 1.58, -0.898, 0.35, -0.5856, -0.455, 0.685, 0.5874, 0.367]
+teste2 = [1.253, 1.58, -0.898, 0.35, -0.5856, -0.455, 0.685, 0.5874, 0.367]
+teste = [-1.0, 0.231, 0.51, -1.64, 1.8522, -1.452, 1.123, -0.254, 0.5878]
+print('Weight size: ' + str(len(weight)))
+
 total = 0
-for i in range(len(image_input)):
-  total = total + (float(image_input[i]) * float(weight[i]))
-print(total)
+for i in range(9):
+  total = total + (float(image_input[i]) * float(teste2[i]))
+print('Dot product: ' + str(total))
 
 '''if len(sys.argv) != 2:
     print('Invalid amount of arguments.')
@@ -28,7 +33,7 @@ print('Versao Beta 1.0')
 print('-' * 50)
 print('')
 
-def float_bin(number, places = 8):
+def float_bin(number, places = 32):
     
     if number < 0.0:
         signal = True
@@ -47,8 +52,8 @@ def float_bin(number, places = 8):
         res += whole
     
     res = res.split('.')
-    if len(res[0]) != 8:
-      res[0] = ('0' * (8-len(res[0]))) + res[0]
+    if len(res[0]) != 3:
+      res[0] = ('0' * (3-len(res[0]))) + res[0]
     parcial = res[0] + res[1]
     if signal == True:
       return complement_two(parcial)
@@ -107,44 +112,17 @@ def result(num):
     return (result[0] + '.' + result[1])
     #return (result[0] + result[1])
 
-def main():
-    '''input_image = open('input.txt', 'r').read().split('\n')
-    weight = open('weight.txt', 'r').read().split('\n')
-
-    if sys.argv[1] == '-t':
-        print('Input coding: ')
-        for each_input in input_image:
-            if each_input != '':
-                print(each_input + ': ' + result(float(each_input)))
-        print('-' * 50)
-
-        print('Weight coding: ')
-        for each_weight in weight:
-            if each_weight != '':
-                print(each_weight + ': ' + result(float(each_weight)))
-        print('-' * 50)
-
-    elif sys.argv[1] == '-o':
-        print('Fie output: bitList.txt')
-        out_input = open('bitList.txt', 'w')
-        for each_input in input_image:
-            if each_input != '':
-                out_input.write(result(float(each_input)) + '\n')
-        for each_weight in weight:
-            if each_weight != '':
-                out_input.write(result(float(each_weight)) + '\n')
-    else:
-        print('Invalid argument...\nExiting program...')
-        sys.exit()'''
-      
-    print('Input coding: ')
+def main():    
+    #print('Input coding: ')
     for each_input in image_input:
-      print(str(each_input) + ': ' + float_bin(float(each_input)) )
+      #print(str(each_input) + ': ' + float_bin(float(each_input)) )
+      print(float_bin(float(each_input)))
     print('-' * 50)
 
-    print('Weight coding: ')
+    #print('Weight coding: ')
     for each_weight in weight:
-      print(str(each_weight) + ': ' + float_bin(float(each_weight)))
+      #print(str(each_weight) + ': ' + float_bin(float(each_weight)))
+      print(float_bin(float(each_weight)))
     print('-' * 50)
 
 if __name__ == '__main__':
