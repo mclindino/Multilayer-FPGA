@@ -5,17 +5,19 @@ USE work.parameters.ALL;
 
 ENTITY perceptron IS
 PORT(
-	input       : IN  input_image;
-	weight 		: IN  input_image;
-	clock			: IN  STD_LOGIC;
-	reset		   : IN  STD_LOGIC;
-	output 		: OUT STD_LOGIC_VECTOR((((2 + precision) * 2) + 1) DOWNTO 0)
+	input       			: IN  input_image;
+	weight 					: IN  input_image;
+	layer_indentifier		: IN  STD_LOGIC_VECTOR(1 DOWNTO 0);
+	clock						: IN  STD_LOGIC;
+	reset		   			: IN  STD_LOGIC;
+	output 					: OUT STD_LOGIC_VECTOR((2 + precision) DOWNTO 0)
 );
 END perceptron;
 
 ARCHITECTURE behavior OF perceptron IS
 SIGNAL sum: STD_LOGIC_VECTOR((((2 + precision) * 2) + 1) DOWNTO 0);
 SIGNAL valid_bit: STD_LOGIC;
+SIGNAL ReLu: STD_LOGIC_VECTOR((((2 + precision) * 2) + 1) DOWNTO 0);
 
 	--signal aux1, aux2, aux3, aux4, aux5, aux6, aux7, aux8, aux9, aux10, aux11, aux12, aux13, aux14, aux15, aux16  : SIGNED((((8 + precision) * 2) + 1) DOWNTO 0);
 	--signal aux_sum2 : signed((((8 + precision) * 2) + 1) DOWNTO 0);
@@ -37,10 +39,22 @@ BEGIN
 		ELSIF clock'EVENT and clock = '1' THEN
 			IF valid_bit = '0' THEN
 				aux_sum := sum;
-				FOR i IN 0 TO (data_width-1) LOOP
-					aux := STD_LOGIC_VECTOR( SIGNED(input(i)) * SIGNED(weight(i)) );
-					aux_sum := STD_LOGIC_VECTOR( SIGNED(aux_sum) + SIGNED(aux) );
-				END LOOP;
+				IF layer_indentifier = "00" THEN
+					FOR i IN 0 TO (data_width-1) LOOP
+						aux := STD_LOGIC_VECTOR( SIGNED(input(i)) * SIGNED(weight(i)) );
+						aux_sum := STD_LOGIC_VECTOR( SIGNED(aux_sum) + SIGNED(aux) );
+					END LOOP;
+				ELSIF layer_indentifier = "01" THEN
+					FOR i IN 0 TO (n_perceptrons_1-1) LOOP
+						aux := STD_LOGIC_VECTOR( SIGNED(input(i)) * SIGNED(weight(i)) );
+						aux_sum := STD_LOGIC_VECTOR( SIGNED(aux_sum) + SIGNED(aux) );
+					END LOOP;
+				ELSIF layer_indentifier = "10" THEN
+					FOR i IN 0 TO (n_perceptrons_2-1) LOOP
+						aux := STD_LOGIC_VECTOR( SIGNED(input(i)) * SIGNED(weight(i)) );
+						aux_sum := STD_LOGIC_VECTOR( SIGNED(aux_sum) + SIGNED(aux) );
+					END LOOP;
+				END IF;
 				sum <= aux_sum;
 				valid_bit <= '1';
 			END IF;
@@ -79,11 +93,15 @@ BEGIN
 	PROCESS(sum)
 	BEGIN
 		IF (sum(68) = '1') OR (sum = (sum'range => '0')) THEN
-			output <= (others => '0');
+			ReLu <= (others => '0');
 		ELSE
-			output <= sum;
+			ReLu <= sum;
 		END IF;
-	END PROCESS;
+		
+		--STD_LOGIC_VECTOR((((2 + precision) * 2) + 1) DOWNTO 0);
+		--	69 downto 0 -> 70 bits 
+		output <= ReLu((precision * 2) + 2 DOWNTO precision);
+	END PROCESS; 
 		--output <= "0000000000000000" & sum(33 downto 16);
 		--aux_sum2 <= aux1 + aux2 + aux3 + aux4 + aux5 + aux6 + aux7 + aux8 + aux9 + aux10 + aux11 + aux12 + aux13 + aux14 + aux15 + aux16;
 		
