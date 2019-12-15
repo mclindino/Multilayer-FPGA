@@ -40,6 +40,20 @@ FUNCTION strToSigned(input : string) return signed is
 	return temp;
 end function strToSigned;
 
+FUNCTION signedToStr(input : SIGNED) RETURN STRING IS
+	VARIABLE temp: STRING(input'left+1 DOWNTO 1);
+	BEGIN
+		FOR i IN input'reverse_range LOOP
+			IF (input(i) = '1') THEN
+				temp(i + 1) := '1';
+			ELSIF (input(i) = '0') THEN
+				temp(i + 1) := '0';
+			END IF;
+		END LOOP;
+		
+		RETURN temp;
+END FUNCTION signedToStr;
+
 BEGIN
 	i1 : FullyConnected
 	PORT MAP (
@@ -61,7 +75,7 @@ END PROCESS;
 reset <= '1', '0' AFTER 10ns;
 
 
-PROCESS(clock)
+READFILE: PROCESS(clock)
 
 	FILE weightFile 	: TEXT open read_mode is "binWeight2010MLP.txt";
 	FILE inputFile 	: TEXT open read_mode is "binInput2010MLP.txt";
@@ -73,6 +87,7 @@ PROCESS(clock)
 	
 	BEGIN
 		IF clock'EVENT and clock = '1' THEN
+			
 			IF counter < n_perceptrons_2 THEN
 				
 				IF counter < 1 THEN
@@ -94,8 +109,10 @@ PROCESS(clock)
 				READ(lineType, strType);
 				weight(counter)(data_width) <= strToSigned(strType);
 				counter := counter + 1;
-			ELSIF counter < (n_perceptrons_2 + n_perceptrons_output - 1) THEN
-				FOR j IN 0 TO (n_perceptrons_2 - 1) LOOP
+			
+			ELSIF (counter < (n_perceptrons_2 + n_perceptrons_output)) THEN
+				
+				FOR j IN 0 TO 19 LOOP
 					READLINE(weightFile, lineType);
 					READ(lineType, strType);
 					weight(counter)(j) <= strToSigned(strType);
@@ -103,7 +120,8 @@ PROCESS(clock)
 				
 				READLINE(biasFile, lineType);
 				READ(lineType, strType);
-				weight(counter)(data_width) <= strToSigned(strType);
+				weight(counter)(20) <= strToSigned(strType);
+				
 				counter := counter + 1;
 			ELSE
 				bitControl <= '1';
@@ -111,10 +129,26 @@ PROCESS(clock)
 		END IF;
 END PROCESS;
 
+--WRITEFILE: PROCESS
+----	VARIABLE outFile : OPEN WRITE_MODE IS "OUT.txt";
+--	VARIABLE strOut  : STRING( (8 + precision) DOWNTO 1);
+--	VARIABLE outLine : LINE;
+--	
+--	BEGIN
+--		FILE_OPEN(outfile, "OUT.txt", WRITE_MODE);
+--		WAIT UNTIL (FALLING_EDGE(clock));
+--		FOR I IN 0 TO 10 LOOP
+--			strOut <= signedToStr(output(i));
+--		END LOOP;
+--		
+--		WRITE(outLine, strOut);
+--		WRITELINE(outfile, outLine);
+--END PROCESS;
+			
 -- Perceptron
 --PROCESS(clock)
 --
---	FILE weightFile 		: TEXT open read_mode is "binWeight10P.txt";
+--	FILE weightFile 	: TEXT open read_mode is "binWeight10P.txt";
 --	FILE inputFile 	: TEXT open read_mode is "binInput10P.txt";
 --	FILE biasFile 		: TEXT open read_mode is "binBias10P.txt";
 --	VARIABLE inType	: SIGNED( (7 + precision) DOWNTO 0);

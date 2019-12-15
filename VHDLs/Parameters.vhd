@@ -10,13 +10,11 @@ PACKAGE Parameters IS
 	CONSTANT n_perceptrons_2		: INTEGER := 20;													-- Numero de perceptrons 2 camada
 	CONSTANT n_perceptrons_output : INTEGER := 10;													-- Numero de perceptrons output
 	CONSTANT n_layers					: INTEGER := 1;													-- Numero de camadas
-	CONSTANT pooling_width			: INTEGER := 4;													-- Entrada pooling kernel (x^2)
 	CONSTANT precision				: INTEGER := 32;													-- Precisao de casa decimais em bits
 	
 	TYPE input_image   IS ARRAY(data_width DOWNTO 0) OF SIGNED( (7 + precision) DOWNTO 0);																							-- Tamanho de entradas do perceptron
-	TYPE array_weight  IS ARRAY((n_perceptrons_1 + n_perceptrons_2 + n_perceptrons_output)-1 DOWNTO 0) OF input_image;											-- Tamanho de pesos totais
+	TYPE array_weight  IS ARRAY((n_perceptrons_1 + n_perceptrons_2 + n_perceptrons_output)-1 DOWNTO 0) OF input_image;													-- Tamanho de pesos totais
 	TYPE array_multiplier IS ARRAY((n_perceptrons_output- 1) DOWNTO 0) OF SIGNED( ( 7 + precision) DOWNTO 0);
-	TYPE array_pooling IS ARRAY(pooling_width DOWNTO 0) OF STD_LOGIC_VECTOR((2 + precision) DOWNTO 0);																	-- Tamanho do kernel (pooling)
 	
 END PACKAGE Parameters;
 
